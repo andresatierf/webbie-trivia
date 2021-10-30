@@ -1,5 +1,6 @@
 package org.academiadecodigo.altcatras65.game.room;
 
+
 import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.player.Player;
 import org.academiadecodigo.altcatras65.game.player.PlayerFactory;
@@ -36,8 +37,8 @@ public class Room implements Runnable {
         QuestionFactory.createQuestions(theme);
     }
 
-    public void addPlayer(Socket socket, String name, Color color) {
-        PlayerFactory.createPlayer(socket, name, color);
+    public void addPlayer(Socket socket) {
+        PlayerFactory.createPlayer(socket);
     }
 
     public List<Player> getPlayers() {

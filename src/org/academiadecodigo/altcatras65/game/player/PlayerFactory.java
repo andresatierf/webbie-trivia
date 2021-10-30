@@ -5,7 +5,7 @@ import java.net.Socket;
 
 public class PlayerFactory {
 
-    public static Player createPlayer(Socket playerSocket, String name, Color color) {
-        return new Player(playerSocket, name, color);
+    public static Player createPlayer(Socket playerSocket) {
+        return new Player(playerSocket);
     }
 }
