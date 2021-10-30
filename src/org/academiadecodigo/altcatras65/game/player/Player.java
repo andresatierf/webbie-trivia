@@ -10,10 +10,8 @@ public class Player implements Runnable {
     private PlayerType playerType;
     private int score;
 
-    public Player(Socket playerSocket, String name, Color color) {
+    public Player(Socket playerSocket) {
         this.playerSocket = playerSocket;
-        this.name = name;
-        this.color = color;
     }
 
     @Override

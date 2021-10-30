@@ -64,11 +64,11 @@ public class Server {
      */
 
     private void serve(Socket clientSocket) {
-        if(roomList.getLast().getPlayers() >= roomList.getLast().getMaxRoomSize) {
+        if(roomList.getLast().getPlayers().size() >= roomList.getLast().getMaxRoomSize()) {
             createRoom();
             serve(clientSocket);
         }
 
-        roomList.getLast().getPlayer(clientSocket);
+        roomList.getLast().addPlayer(clientSocket);
     }
 }
