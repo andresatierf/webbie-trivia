@@ -64,7 +64,7 @@ public class Server {
      */
 
     private void serve(Socket clientSocket) {
-        if(roomList.getLast().getPlayers().size() >= roomList.getLast().getMaxRoomSize()) {
+        if(roomList.getLast().getPlayers().size() >= roomList.getLast().getMaxRoomSize() || roomList.getLast().isGameStarted()) {
             createRoom();
             serve(clientSocket);
         }
