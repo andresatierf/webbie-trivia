@@ -1,28 +1,23 @@
 package org.academiadecodigo.altcatras65.game.player;
 
 import org.academiadecodigo.altcatras65.game.Colors;
+import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.room.Room;
 import org.academiadecodigo.bootcamp.Prompt;
-import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
-import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
-import org.academiadecodigo.bootcamp.scanners.integer.IntegerSetInputScanner;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringSetInputScanner;
 
-import java.awt.*;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Player implements Runnable {
+
+    public static final int DELAY = 5;
 
     private Socket playerSocket;
     private String name;
@@ -50,8 +45,20 @@ public class Player implements Runnable {
             // ask color
             askPlayerColor(prompt);
 
+            // ask admin for theme
+            if (this.playerType.equals(PlayerType.ADMIN)) {
+
+                chooseTheme(prompt);
+
+            } else {
+
+                presentTheme(prompt);
+
+            }
+
             // loop
             while (!this.gameStarted) {
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -63,25 +70,15 @@ public class Player implements Runnable {
 
                 awaitQuestion();
 
-                Set<String> stringOptions = new HashSet<>();
-                stringOptions.add("");
+                presentQuestion(prompt);
 
-                StringInputScanner question = new StringSetInputScanner(stringOptions);
+                presentCountdown(prompt);
 
-                StringBuilder stringBuilder = new StringBuilder();
-
-                int linelength = 80;
-                stringBuilder.append("\n" + new String( new char[linelength]).replace("\0", "-"));
-                stringBuilder.append("\n*" + new String( new char[linelength-2]).replace("\0", " ") + "*");
-                stringBuilder.append("\n* " + this.currentQuestion.getDescription());
-                stringBuilder.append("\n*" + new String( new char[linelength-2]).replace("\0", " ") + "*");
-                stringBuilder.append("\n*" + new String( new char[linelength]).replace("\0", "-"));
-
-
-                question.setMessage(stringBuilder.toString());
-                System.out.println(stringBuilder);
-                prompt.displayMessage(question);
-
+                StringInputScanner stringInputScanner = new StringSetInputScanner(new HashSet<>(Arrays.asList("")));
+                stringInputScanner.setMessage("GO!\n");
+                System.out.print(this.name + " GO!\n");
+                prompt.getUserInput(stringInputScanner);
+                this.room.addAttempt(this);
 
 
                 this.currentQuestion = null;
@@ -91,6 +88,64 @@ public class Player implements Runnable {
             e.printStackTrace();
         }
 
+    }
+
+    private void presentTheme(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringInputScanner();
+        stringInputScanner.setMessage("The theme for this game is " + this.room.getTheme().getDescription());
+        prompt.displayMessage(stringInputScanner);
+    }
+
+    private void chooseTheme(Prompt prompt) {
+        String[] options = null;
+
+        options = Stream.of(ThemeType.values())
+                .map(ThemeType::getDescription)
+                .toArray(String[]::new);
+
+        MenuInputScanner askTheme = new MenuInputScanner(options);
+
+        askTheme.setMessage("What theme do you want?");
+
+        int themeIndex = prompt.getUserInput(askTheme) - 1;
+
+        this.room.setTheme(ThemeType.values()[themeIndex]);
+
+        System.out.println(this.name + " decided to play " + this.room.getTheme().getDescription());
+    }
+
+    private void presentCountdown(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringInputScanner();
+
+        stringInputScanner.setMessage("You have " + DELAY + " seconds to think...\n");
+        prompt.displayMessage(stringInputScanner);
+        for (int i = DELAY; i > 0; i--) {
+            stringInputScanner.setMessage(i + "...\n");
+            prompt.displayMessage(stringInputScanner);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void presentQuestion(Prompt prompt) {
+        Set<String> stringOptions = new HashSet<>();
+        stringOptions.add("");
+
+        StringInputScanner question = new StringSetInputScanner(stringOptions);
+
+        String q = this.currentQuestion.getDescription() + "\n";
+        for (String answer : this.currentQuestion.getAnswers()) {
+            q += answer + "\n";
+        }
+
+        question.setMessage(q);
+        System.out.println("Question: " + q);
+
+
+        prompt.displayMessage(question);
     }
 
     private void awaitQuestion() {
@@ -108,11 +163,9 @@ public class Player implements Runnable {
 
         String[] options = null;
 
-        List<String> list = Stream.of(Colors.values())
-                .map(color -> color.getName())
-                .collect(Collectors.toList());
-
-        options = list.toArray(new String[0]);
+        options = Stream.of(Colors.values())
+                .map(Colors::getName)
+                .toArray(String[]::new);
 
         MenuInputScanner askColor = new MenuInputScanner(options);
 
@@ -131,7 +184,7 @@ public class Player implements Runnable {
 
         askName.setMessage("What's your name?\n");
 
-        this.name = prompt.getUserInput(askName);
+        this.name = prompt.getUserInput(askName).trim();
 
         if (this.name.equalsIgnoreCase("tony")) {
 
