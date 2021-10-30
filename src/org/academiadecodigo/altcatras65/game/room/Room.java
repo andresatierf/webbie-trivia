@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 
 public class Room implements Runnable {
 
-    public static final int DEFAULT_ROOM_SIZE = 3;
+    public static final int DEFAULT_ROOM_SIZE = 2;
     public static final int DEFAULT_MAX_QUESTIONS = 2;
 
     private ExecutorService playerPool;
@@ -150,7 +150,7 @@ public class Room implements Runnable {
             for (Player player : this.players) {
                 Prompt prompt = new Prompt(player.getPlayerSocket().getInputStream(), new PrintStream(player.getPlayerSocket().getOutputStream()));
                 StringInputScanner stringInputScanner = new StringInputScanner();
-                stringInputScanner.setMessage("\nThis room's theme is now " + this.theme.getDescription());
+                stringInputScanner.setMessage("\nThis room's theme is now '" + this.theme.getDescription() + "'");
                 prompt.displayMessage(stringInputScanner);
             }
         } catch (IOException e) {
@@ -175,5 +175,6 @@ public class Room implements Runnable {
 
     public synchronized void addAttempt(Player player) {
         this.roundAttempts.add(player);
+        player.setAnswerTime(true);
     }
 }
