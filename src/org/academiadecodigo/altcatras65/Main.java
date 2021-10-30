@@ -13,7 +13,6 @@ public class Main {
             int port = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PORT;
 
             Server server = new Server(port);
-            server.listen();
 
         } catch (NumberFormatException e) {
 

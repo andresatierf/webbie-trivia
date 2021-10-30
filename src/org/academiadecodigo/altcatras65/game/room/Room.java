@@ -8,13 +8,25 @@ import org.academiadecodigo.altcatras65.game.question.QuestionFactory;
 
 import java.awt.*;
 import java.net.Socket;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Room implements Runnable {
+
+    public static final int MAX_ROOM_SIZE = 2;
+    public static final int MAX_QUESTIONS = 2;
+
     private List<Player> players;
     private int maxQuestions;
     private int maxRoomSize;
     private ThemeType theme;
+
+    public Room() {
+        this.players = new LinkedList<>();
+        this.theme = ThemeType.ALL;
+        this.maxRoomSize = MAX_ROOM_SIZE;
+        this.maxQuestions = MAX_QUESTIONS;
+    }
 
     public void init() {
 
@@ -38,7 +50,7 @@ public class Room implements Runnable {
     }
 
     public void addPlayer(Socket socket) {
-        PlayerFactory.createPlayer(socket);
+        this.players.add(PlayerFactory.createPlayer(socket));
     }
 
     public List<Player> getPlayers() {
