@@ -5,6 +5,7 @@ import org.academiadecodigo.altcatras65.game.question.Question;
 
 public class DisplayMessages {
     public static final int LINE_LENGTH = 80;
+    public static final String resetColorASCII = "\u001B[0m";
 
     public static String displayString(Question question) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -16,7 +17,8 @@ public class DisplayMessages {
         int questionLength = (lineLength / 2) - 1;
 
         //question
-        stringBuilder.append(boxedString(questionStr, question.getqType().getColor()));
+        stringBuilder.append(boxedString(questionStr, question));
+        stringBuilder.append(resetColorASCII);
 
         //answer1 and answer2
         stringBuilder.append(dualBox(answers[0], answers[1], 1, 2));
@@ -24,6 +26,7 @@ public class DisplayMessages {
         //answer3 and answer4
         stringBuilder.append(dualBox(answers[2], answers[3], 3, 4));
 
+        stringBuilder.append("\n");
 
         return stringBuilder.toString();
     }
@@ -43,17 +46,19 @@ public class DisplayMessages {
         else return 0;
     }
 
-    public static String boxedString(String str, Colors color) {
+    public static String boxedString(String str, Question question) {
+        String colorASCI = question.getqType().getColor().getAsciiColor();
         StringBuilder stringBuilder = new StringBuilder();
         int strLength = LINE_LENGTH;
 
         int qSize = (strLength / 2) - (str.length() / 2);
 
-        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "-"));
-        stringBuilder.append("\n*" + new String(new char[strLength - 2]).replace("\0", " ") + "*");
-        stringBuilder.append("\n*" + new String(new char[qSize - 1]).replace("\0", " ") + str + new String(new char[qSize - evenCheck(str) - 1]).replace("\0", " ") + "*");
-        stringBuilder.append("\n*" + new String(new char[strLength - 2]).replace("\0", " ") + "*");
-        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "-"));
+        stringBuilder.append(colorASCI);
+        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "="));
+        stringBuilder.append("\n§" + new String(new char[strLength - 2]).replace("\0", " ") + "§");
+        stringBuilder.append("\n§" + new String(new char[qSize - 1]).replace("\0", " ") + resetColorASCII + str + colorASCI + new String(new char[qSize - evenCheck(str) - 1]).replace("\0", " ") + "§");
+        stringBuilder.append("\n§" + new String(new char[strLength - 2]).replace("\0", " ") + "§");
+        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "="));
 
         return stringBuilder.toString();
     }
