@@ -11,6 +11,16 @@ public class Question {
     private ThemeType theme;
 
     public Question() {
+        this.description = "test question";
+        this.answer = "Correct";
+        this.answers = new String[]{
+                "Correct",
+                "Wrong",
+                "more Wrong",
+                "just wrong"
+        };
+        this.qType = QuestionType.LOW;
+        this.theme = ThemeType.ALL;
     }
 
     //region Getters and Setters

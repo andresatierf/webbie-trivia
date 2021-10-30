@@ -2,6 +2,9 @@ package org.academiadecodigo.altcatras65.game.question;
 
 import org.academiadecodigo.altcatras65.game.ThemeType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class QuestionFactory {
@@ -18,7 +21,9 @@ public class QuestionFactory {
     }
 
     private static List<Question> createAllQuestions() {
-        return null;
+        return new LinkedList<Question>(Arrays.asList(
+                new Question()
+        ));
     }
 
     private static List<Question> createBasicQuestions() {
