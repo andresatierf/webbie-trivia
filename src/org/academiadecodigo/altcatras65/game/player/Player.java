@@ -23,15 +23,18 @@ public class Player implements Runnable {
     private String name;
     private Colors color;
     private PlayerType playerType;
-    private int score;
-    private boolean gameStarted;
     private Room room;
+    private int score;
+
+    private boolean gameStarted;
+    private boolean answerTime;
 
     private Question currentQuestion;
 
     public Player(Socket playerSocket) {
         this.playerSocket = playerSocket;
         this.gameStarted = false;
+        this.answerTime = false;
     }
 
     @Override
@@ -56,7 +59,7 @@ public class Player implements Runnable {
 
             }
 
-            // loop
+            // Waiting for game to start
             while (!this.gameStarted) {
 
                 try {
@@ -74,11 +77,10 @@ public class Player implements Runnable {
 
                 presentCountdown(prompt);
 
-                StringInputScanner stringInputScanner = new StringSetInputScanner(new HashSet<>(Arrays.asList("")));
-                stringInputScanner.setMessage("GO!\n");
-                System.out.print(this.name + " GO!\n");
-                prompt.getUserInput(stringInputScanner);
-                this.room.addAttempt(this);
+                awaitButtonPress(prompt);
+
+                waitToAnswer();
+
 
 
                 this.currentQuestion = null;
@@ -90,9 +92,28 @@ public class Player implements Runnable {
 
     }
 
+    private void waitToAnswer() {
+        while (answerTime) {
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void awaitButtonPress(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringSetInputScanner(new HashSet<>(Arrays.asList("\0")));
+        stringInputScanner.setMessage("GO!\n");
+        System.out.print(this.name + " GO!\n");
+        prompt.getUserInput(stringInputScanner);
+        this.room.addAttempt(this);
+    }
+
     private void presentTheme(Prompt prompt) {
         StringInputScanner stringInputScanner = new StringInputScanner();
-        stringInputScanner.setMessage("The theme for this game is " + this.room.getTheme().getDescription());
+        stringInputScanner.setMessage("The theme for this game is " + this.room.getTheme().getDescription() + "\n");
         prompt.displayMessage(stringInputScanner);
     }
 
@@ -206,6 +227,14 @@ public class Player implements Runnable {
 
     public Colors getColor() {
         return color;
+    }
+
+    public boolean isAnswerTime() {
+        return answerTime;
+    }
+
+    public void setAnswerTime(boolean answerTime) {
+        this.answerTime = answerTime;
     }
 
     public void setPlayerType(PlayerType playerType) {
