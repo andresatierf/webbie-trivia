@@ -40,6 +40,10 @@ public class Room implements Runnable {
         PlayerFactory.createPlayer(socket, name, color);
     }
 
+    public List<Player> getPlayers() {
+        return players;
+    }
+
     @Override
     public void run() {
 
