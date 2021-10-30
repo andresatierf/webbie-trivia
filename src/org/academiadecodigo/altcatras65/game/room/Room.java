@@ -44,6 +44,10 @@ public class Room implements Runnable {
         return players;
     }
 
+    public int getMaxRoomSize() {
+        return maxRoomSize;
+    }
+
     @Override
     public void run() {
 
