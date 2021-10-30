@@ -7,18 +7,22 @@ import org.academiadecodigo.altcatras65.game.player.PlayerFactory;
 import org.academiadecodigo.altcatras65.game.player.PlayerType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.question.QuestionFactory;
+import org.academiadecodigo.bootcamp.Prompt;
+import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Room implements Runnable {
 
-    public static final int DEFAULT_ROOM_SIZE = 1;
+    public static final int DEFAULT_ROOM_SIZE = 3;
     public static final int DEFAULT_MAX_QUESTIONS = 2;
 
     private ExecutorService playerPool;
@@ -28,6 +32,7 @@ public class Room implements Runnable {
     private int maxRoomSize;
     private ThemeType theme;
     private boolean gameStarted;
+    private List<Player> roundAttempts;
 
     public Room() {
     }
@@ -39,6 +44,7 @@ public class Room implements Runnable {
         this.maxQuestions = DEFAULT_MAX_QUESTIONS;
         this.playerPool = Executors.newFixedThreadPool(DEFAULT_ROOM_SIZE);
         this.gameStarted = false;
+        this.roundAttempts = new ArrayList<>();
     }
 
     public void start() {
@@ -49,7 +55,7 @@ public class Room implements Runnable {
         // wait start
         awaitGameStart();
 
-        List<Question> questions = getQuestions();
+        List<Question> questions = createQuestions();
         int currentQuestionIndex = 0;
 
         // loop
@@ -106,7 +112,7 @@ public class Room implements Runnable {
 
     }
 
-    private List<Question> getQuestions() {
+    private List<Question> createQuestions() {
         return QuestionFactory.createQuestions(theme);
     }
 
@@ -126,6 +132,32 @@ public class Room implements Runnable {
         return maxRoomSize;
     }
 
+    public void setTheme(ThemeType theme) {
+        this.theme = theme;
+        notifyThemeChange();
+    }
+
+    public ThemeType getTheme() {
+        return theme;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    private void notifyThemeChange() {
+        try {
+            for (Player player : this.players) {
+                Prompt prompt = new Prompt(player.getPlayerSocket().getInputStream(), new PrintStream(player.getPlayerSocket().getOutputStream()));
+                StringInputScanner stringInputScanner = new StringInputScanner();
+                stringInputScanner.setMessage("\nThis room's theme is now " + this.theme.getDescription());
+                prompt.displayMessage(stringInputScanner);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void startGame() {
         this.gameStarted = true;
         for (Player player : this.players) {
@@ -139,5 +171,9 @@ public class Room implements Runnable {
         init();
         start();
 
+    }
+
+    public synchronized void addAttempt(Player player) {
+        this.roundAttempts.add(player);
     }
 }
