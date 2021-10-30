@@ -1,12 +1,12 @@
 package org.academiadecodigo.altcatras65.game;
 
 public enum ThemeType {
-    ALL("All themes"),
-    BASICS("Programming basics"),
-    OOP("Object oriented programming"),
-    FUNCTIONAL("Functional programming"),
-    INTERNET("Internet"),
-    WEB("Web & web architecture");
+    ALL("All Themes"),
+    BASICS("Programming Basics"),
+    OOP("Object Oriented Programming"),
+    FUNCTIONAL("Functional Programming"),
+    INTERNET("Internet & Networking"),
+    WEB("Web & Web Architecture");
 
     private String description;
 
