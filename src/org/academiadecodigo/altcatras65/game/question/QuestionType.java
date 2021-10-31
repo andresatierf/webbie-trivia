@@ -5,9 +5,9 @@ import org.academiadecodigo.altcatras65.game.Colors;
 import java.awt.*;
 
 public enum QuestionType {
-    HIGH(50,-25, Colors.RED),
-    MEDIUM(30, -15, Colors.YELLOW),
-    LOW(10, -5, Colors.WHITE);
+    HIGH(72,-36, Colors.RED),
+    MEDIUM(60, -24, Colors.YELLOW),
+    LOW(48, -12, Colors.WHITE);
 
     private int winValue;
     private int loseValue;
