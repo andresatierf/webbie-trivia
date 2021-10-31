@@ -128,8 +128,8 @@ public class Room implements Runnable {
 
         }
         Player winner = getWinner();
-
-        messagePlayers(Player.HEADER + DisplayMessages.boxedString("The winner is " + winner.getColor().getAsciiColor() + winner.getName() + Colors.WHITE.getAsciiColor() + "! Thanks for playing", winner.getColor()) + getScores());
+        System.out.println("This room has finished playing. The winner is " + winner.getName());
+        messagePlayers(Player.HEADER + DisplayMessages.boxedString("The winner is " + winner.getColor().getAsciiColor() + winner.getName() + Colors.WHITE.getAsciiColor() + "! Thanks for playing\n", winner.getColor()) + getScores());
     }
 
     private Player getWinner() {

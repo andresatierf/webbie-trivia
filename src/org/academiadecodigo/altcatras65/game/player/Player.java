@@ -238,44 +238,6 @@ public class Player implements Runnable {
         }
     }
 
-    private void presentNotReady(Prompt prompt) {
-        String[] options = new String[]{
-                "Go Back"
-        };
-        MenuInputScanner menuInputScanner = new MenuInputScanner(options);
-        menuInputScanner.setMessage(HEADER + "Oops! Some players are not ready");
-        prompt.getUserInput(menuInputScanner);
-    }
-
-    private boolean isReady() {
-        return this.ready;
-    }
-
-    private void presentPlayerList(Prompt prompt) {
-        String[] options = new String[]{
-                "Back"
-        };
-        MenuInputScanner menuInputScanner = new MenuInputScanner(options);
-        menuInputScanner.setMessage(HEADER + "Player List:\n" +
-                this.room.getPlayerList().stream()
-                        .map(player -> "> " + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + "\n")
-                        .reduce("", (acc, name) -> acc + name));
-        prompt.getUserInput(menuInputScanner);
-
-    }
-
-    private void presentInstructions(Prompt prompt) {
-        String[] options = new String[]{
-                "Continue"
-        };
-        MenuInputScanner stringInputScanner = new MenuInputScanner(options);
-        stringInputScanner.setMessage(HEADER + "\nInstructions:\n\n" +
-                "    > Type anything and hit Enter to buzz to be able to answer\n" +
-                "    > Answer with the answer number seen on the top of the box");
-        prompt.getUserInput(stringInputScanner);
-        presentTheme(prompt);
-    }
-
     private void awaitQuestion() {
 
         while (this.currentQuestion == null) {
@@ -341,6 +303,40 @@ public class Player implements Runnable {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void presentNotReady(Prompt prompt) {
+        String[] options = new String[]{
+                "Go Back"
+        };
+        MenuInputScanner menuInputScanner = new MenuInputScanner(options);
+        menuInputScanner.setMessage(HEADER + "Oops! Some players are not ready");
+        prompt.getUserInput(menuInputScanner);
+    }
+
+    private void presentPlayerList(Prompt prompt) {
+        String[] options = new String[]{
+                "Back"
+        };
+        MenuInputScanner menuInputScanner = new MenuInputScanner(options);
+        menuInputScanner.setMessage(HEADER + "Player List:\n" +
+                this.room.getPlayerList().stream()
+                        .map(player -> "> " + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + "\n")
+                        .reduce("", (acc, name) -> acc + name));
+        prompt.getUserInput(menuInputScanner);
+
+    }
+
+    private void presentInstructions(Prompt prompt) {
+        String[] options = new String[]{
+                "Continue"
+        };
+        MenuInputScanner stringInputScanner = new MenuInputScanner(options);
+        stringInputScanner.setMessage(HEADER + "\nInstructions:\n\n" +
+                "    > Type anything and hit Enter to buzz to be able to answer\n" +
+                "    > Answer with the answer number seen on the top of the box");
+        prompt.getUserInput(stringInputScanner);
+        presentTheme(prompt);
     }
 
     //endregion
@@ -427,6 +423,13 @@ public class Player implements Runnable {
         this.roundEnd = roundEnd;
     }
 
-    //endregion
+    public boolean isReady() {
+        return ready;
+    }
+
+    public void setReady(boolean ready) {
+        this.ready = ready;
+    }
+//endregion
 
 }
