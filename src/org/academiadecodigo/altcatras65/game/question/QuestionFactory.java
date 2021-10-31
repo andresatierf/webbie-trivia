@@ -56,7 +56,7 @@ public class QuestionFactory {
                         new String[]{
                                 "HTTP, URL, URI",
                                 "URL, URI, HTML",
-                                "URL, URI, HTML",
+                                "HTTP, URI, HTML",
                                 "JAVA, SOCKET, URL"
                         },
                         QuestionType.MEDIUM,
@@ -277,6 +277,79 @@ public class QuestionFactory {
     }
 
     private static List<Question> createGeneralProgrammingQuestions() {
-        return null;
+        return new LinkedList<Question>(Arrays.asList(
+                new Question(
+                        "What is a variable?",
+                        "Container",
+                        new String[]{
+                                "Container",
+                                "It is a loop",
+                                "It is a decision structure",
+                                "Language"
+                        },
+                        QuestionType.MEDIUM,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "What is the result of boolean result = 10<5;?",
+                        "false",
+                        new String[]{
+                                "true",
+                                "false",
+                                "5",
+                                "10"
+                        },
+                        QuestionType.HIGH,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "What is a Algorithm?",
+                        "A set of instructions",
+                        new String[]{
+                                "A set of instructions",
+                                "A fancy word",
+                                "",
+                                ""
+                        },
+                        QuestionType.HIGH,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "Resolving errors in programming is called?",
+                        "Debugging",
+                        new String[]{
+                                "Debugging",
+                                "Problem solving",
+                                "Error checking",
+                                "Refixing"
+                        },
+                        QuestionType.LOW,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "Which of the following is not a high level programming language?",
+                        "Assembly",
+                        new String[]{
+                                "Assembly",
+                                "Java",
+                                "C#",
+                                "Kotlin"
+                        },
+                        QuestionType.MEDIUM,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "What is a compiler?",
+                        "Program",
+                        new String[]{
+                                "Program",
+                                "Interpreter",
+                                "",
+                                ""
+                        },
+                        QuestionType.HIGH,
+                        ThemeType.WEB
+                )
+        ));
     }
 }
