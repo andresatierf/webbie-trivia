@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 public class Room implements Runnable {
 
     public static final int DEFAULT_ROOM_SIZE = 4;
-    public static final int DEFAULT_MAX_QUESTIONS = 2;
+    public static final int DEFAULT_MAX_QUESTIONS = 10;
 
     private ExecutorService playerPool;
 
