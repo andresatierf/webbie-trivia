@@ -100,7 +100,7 @@ public class Player implements Runnable {
     }
 
     public void addPoints(int points) {
-        this.score += points;
+        this.score += Math.max(0, points);
     }
 
     //region Ask methods
