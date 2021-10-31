@@ -147,12 +147,12 @@ public class Room implements Runnable {
     private void awaitGameStart() {
         while (!gameStarted) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            startGame();
         }
+        startGame();
     }
 
     private void awaitPlayers() {
@@ -196,6 +196,10 @@ public class Room implements Runnable {
 
     public boolean isGameStarted() {
         return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
     }
 
     private void messagePlayers(String string) {

@@ -73,7 +73,7 @@ public class Player implements Runnable {
 
             }
 
-            awaitGameStart();
+            awaitGameStart(prompt);
 
             while (gameStarted) {
                 this.roundEnd = false;
@@ -134,7 +134,7 @@ public class Player implements Runnable {
         String[] options = null;
 
         options = Stream.of(Colors.values())
-                .map(Colors::getName)
+                .map(color -> color.getAsciiColor() + color.getName() + Colors.WHITE.getAsciiColor())
                 .toArray(String[]::new);
 
         MenuInputScanner askColor = new MenuInputScanner(options);
@@ -196,9 +196,22 @@ public class Player implements Runnable {
 
     //region Wait methods
 
-    private void awaitGameStart() {
+    private void awaitGameStart(Prompt prompt) {
         while (!this.gameStarted) {
-
+            if (this.playerType == PlayerType.ADMIN) {
+                String[] options = new String[]{
+                        "Start",
+                        "Change Theme",
+                        "Wait"
+                };
+                MenuInputScanner menuInputScanner = new MenuInputScanner(options);
+                menuInputScanner.setMessage("Do you want to start?");
+                int choice = prompt.getUserInput(menuInputScanner);
+                if (choice == 1) {
+                    this.room.setGameStarted(true);
+                    this.gameStarted = true;
+                }
+            }
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
