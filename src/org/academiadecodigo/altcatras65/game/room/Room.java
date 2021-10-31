@@ -1,12 +1,14 @@
 package org.academiadecodigo.altcatras65.game.room;
 
 
+import org.academiadecodigo.altcatras65.game.Colors;
 import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.player.Player;
 import org.academiadecodigo.altcatras65.game.player.PlayerFactory;
 import org.academiadecodigo.altcatras65.game.player.PlayerType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.question.QuestionFactory;
+import org.academiadecodigo.altcatras65.ui.DisplayMessages;
 import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 
@@ -26,7 +28,7 @@ public class Room implements Runnable {
 
     private ExecutorService playerPool;
 
-    private List<Player> players;
+    private List<Player> playerList;
     private int maxQuestions;
     private int maxRoomSize;
     private ThemeType theme;
@@ -38,7 +40,7 @@ public class Room implements Runnable {
     }
 
     public void init() {
-        this.players = new LinkedList<>();
+        this.playerList = new LinkedList<>();
         this.theme = ThemeType.ALL;
         this.maxRoomSize = DEFAULT_ROOM_SIZE;
         this.maxQuestions = DEFAULT_MAX_QUESTIONS;
@@ -49,10 +51,10 @@ public class Room implements Runnable {
 
     public void nextRound() {
         this.roundAttempts = new ArrayList<>();
-        for (Player player : this.players) {
+        this.playerList.forEach(player -> {
             player.setCurrentQuestion(null);
             player.setRoundEnd(true);
-        }
+        });
     }
 
     public void start() {
@@ -70,22 +72,22 @@ public class Room implements Runnable {
         while (gameStarted) {
 
             if (currentQuestionIndex >= questions.size()) {
-                for (Player player : this.players) {
-                    player.setGameStarted(false);
-                    gameStarted = false;
-                }
+
+                this.playerList.forEach(player -> player.setGameStarted(false));
+                gameStarted = false;
+
                 break;
             }
             Question question = questions.get(currentQuestionIndex);
 
-            for (Player player : players) {
-                player.sendQuestion(question);
-            }
+            this.playerList.forEach(player -> player.setCurrentQuestion(question));
 
             // Wait for all players to press the button
-            while (this.roundAttempts.size() < this.players.size()) {
+            int timer = 15 * 1000;
+            while (this.roundAttempts.size() < this.playerList.size() && timer > 0) {
 
-                // TODO: 31/10/2021 fix needing all players to press the button
+                timer -= 50;
+
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -93,16 +95,36 @@ public class Room implements Runnable {
                 }
             }
 
-            // ask for the answer
-
-            // check answer
-
-            // if wrong ask next
-
-
+            messagePlayers(Player.HEADER + this.roundAttempts.size() + " players pressed the button" + DisplayMessages.displayQuestion(question));
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            // ask for the answer
+            int counter = 0;
+            for (Player player : this.roundAttempts) {
+                this.playerList.forEach(player1 -> messagePlayers(Player.HEADER + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + " is answering..." + DisplayMessages.displayQuestion(player1.getCurrentQuestion())));
+                String playerGuess = question.getOptions()[player.askAnswer(counter) - 1];
+                if (playerGuess.equals(question.getAnswer())) {
+                    player.addPoints(question.getQuestionType().getWinValue() / (Math.min(counter, 4) + 1));
+                    break;
+                }
+                player.addPoints(question.getQuestionType().getLoseValue() / (Math.min(counter, 4) + 1));
+                this.playerList.forEach(player1 -> messagePlayers(Player.HEADER + player.getName() + " failed. Lets give someone else a try!" + DisplayMessages.displayQuestion(player1.getCurrentQuestion())));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                counter++;
+            }
+            this.playerList.forEach(player -> messagePlayers(Player.HEADER + "Let's move on to the next question!" + DisplayMessages.displayQuestion(player.getCurrentQuestion())));
+            this.playerList.forEach(player -> player.setRoundEnd(true));
+            try {
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -126,7 +148,7 @@ public class Room implements Runnable {
     }
 
     private void awaitPlayers() {
-        while (this.players.size() < this.maxRoomSize) {
+        while (this.playerList.size() < this.maxRoomSize) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -151,14 +173,14 @@ public class Room implements Runnable {
 
     public synchronized void addPlayer(Socket socket) {
         Player player = PlayerFactory.createPlayer(socket);
-        player.setPlayerType(this.players.isEmpty() ? PlayerType.ADMIN : PlayerType.NORMAL);
+        player.setPlayerType(this.playerList.isEmpty() ? PlayerType.ADMIN : PlayerType.NORMAL);
         player.setRoom(this);
-        this.players.add(player);
+        this.playerList.add(player);
         this.playerPool.submit(player);
     }
 
-    public List<Player> getPlayers() {
-        return players;
+    public List<Player> getPlayerList() {
+        return playerList;
     }
 
     public int getMaxRoomSize() {
@@ -167,7 +189,7 @@ public class Room implements Runnable {
 
     public void setTheme(ThemeType theme) {
         this.theme = theme;
-        messagePlayers("This room's theme is now '" + this.theme.getDescription() + "'\n");
+        messagePlayers(Player.HEADER + "This room's theme is now '" + this.theme.getDescription() + "'\n");
     }
 
     public ThemeType getTheme() {
@@ -179,23 +201,21 @@ public class Room implements Runnable {
     }
 
     private void messagePlayers(String string) {
-        try {
-            for (Player player : this.players) {
+        this.playerList.forEach(player -> {
+            try {
                 Prompt prompt = new Prompt(player.getPlayerSocket().getInputStream(), new PrintStream(player.getPlayerSocket().getOutputStream()));
                 StringInputScanner stringInputScanner = new StringInputScanner();
                 stringInputScanner.setMessage(string);
                 prompt.displayMessage(stringInputScanner);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        });
     }
 
     public void startGame() {
         this.gameStarted = true;
-        for (Player player : this.players) {
-            player.setGameStarted(true);
-        }
+        this.playerList.forEach(player -> player.setGameStarted(true));
     }
 
     @Override
@@ -208,7 +228,6 @@ public class Room implements Runnable {
     public synchronized void addAttempt(Player player) {
         this.roundAttempts.add(player);
         player.setAnswerTime(true);
-        messagePlayers(player.getName() + " has pressed the button\n");
-        System.out.println(player.getName() + " pressed the button!");
+        messagePlayers(player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + " has pressed the button\n");
     }
 }
