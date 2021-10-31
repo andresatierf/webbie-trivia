@@ -2,7 +2,7 @@
 <project name="Webbie-Trivia" default="jarfile">
     <!-- Initialize build properties  -->
     <target name="init" description="Initializes properties">
-        <property name="project.name" value="webbie-trivia"/>
+        <property name="project.name" value="Webbie-Trivia"/>
         <property name="src.dir" value="src"/>
         <property name="main.class" value="org.academiadecodigo.altcatras65.Main"/>
         <property name="build.dir" value="build"/>
