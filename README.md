@@ -1,4 +1,6 @@
-Hello everyone, welcome to Webbie-Trivia!!
+---
+
+# Hello everyone, welcome to Webbie-Trivia!!
 
   Webbie-Trivia is a Quiz game that see the players anwsering trivia questions while competing in the fictional game show Webbie!
 Created specifically with multiplayer party gamming in mind.
@@ -12,5 +14,6 @@ if you fail you lose points.
 
   One of the core objectives of the game is to help in the learning proccess and ofcourse to HAVE FUN! 
   
-  Speaking of fun, hope you all have a blast with our game!
+  ### **Speaking of fun, hope you all have a blast with our game!**
   
+---
