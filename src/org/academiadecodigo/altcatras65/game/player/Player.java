@@ -4,10 +4,10 @@ import org.academiadecodigo.altcatras65.game.Colors;
 import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.room.Room;
+import org.academiadecodigo.altcatras65.ui.DisplayMessages;
 import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
-import org.academiadecodigo.bootcamp.scanners.string.StringSetInputScanner;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 public class Player implements Runnable {
 
     public static final int DELAY = 5;
+    public static final String CLEAR_SCREEN = new String(new char[100]).replace("\0", "\n");
 
     private Socket playerSocket;
     private String name;
@@ -30,11 +31,13 @@ public class Player implements Runnable {
     private boolean answerTime;
 
     private Question currentQuestion;
+    private boolean roundEnd;
 
     public Player(Socket playerSocket) {
         this.playerSocket = playerSocket;
         this.gameStarted = false;
         this.answerTime = false;
+        this.roundEnd = false;
     }
 
     @Override
@@ -42,19 +45,27 @@ public class Player implements Runnable {
         try {
             Prompt prompt = new Prompt(this.playerSocket.getInputStream(),
                     new PrintStream(this.playerSocket.getOutputStream()));
+
+            StringInputScanner header = new StringInputScanner();
+            header.setMessage(CLEAR_SCREEN + DisplayMessages.getStartMessage());
+
             // ask name
+            prompt.displayMessage(header);
             askPlayerName(prompt);
 
             // ask color
+            prompt.displayMessage(header);
             askPlayerColor(prompt);
 
             // ask admin for theme
             if (this.playerType.equals(PlayerType.ADMIN)) {
 
+                prompt.displayMessage(header);
                 chooseTheme(prompt);
 
             } else {
 
+                prompt.displayMessage(header);
                 presentTheme(prompt);
 
             }
@@ -70,20 +81,23 @@ public class Player implements Runnable {
             }
 
             while (gameStarted) {
+                this.roundEnd = false;
 
+                prompt.displayMessage(header);
                 awaitQuestion();
 
+                prompt.displayMessage(header);
                 presentQuestion(prompt);
 
+                prompt.displayMessage(header);
                 presentCountdown(prompt);
 
                 awaitButtonPress(prompt);
 
                 waitToAnswer();
 
+                awaitNextRound();
 
-
-                this.currentQuestion = null;
             }
 
         } catch (IOException e) {
@@ -92,8 +106,19 @@ public class Player implements Runnable {
 
     }
 
+    private void awaitNextRound() {
+        while (!roundEnd) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private void waitToAnswer() {
-        while (answerTime) {
+        while (answerTime & !roundEnd) {
+
 
             try {
                 Thread.sleep(50);
@@ -104,8 +129,9 @@ public class Player implements Runnable {
     }
 
     private void awaitButtonPress(Prompt prompt) {
-        StringInputScanner stringInputScanner = new StringSetInputScanner(new HashSet<>(Arrays.asList("\0")));
-        stringInputScanner.setMessage("GO!\n");
+        StringInputScanner stringInputScanner = new StringInputScanner();
+        stringInputScanner.setMessage(CLEAR_SCREEN + "GO!\n" +
+                DisplayMessages.displayString(this.currentQuestion));
         System.out.print(this.name + " GO!\n");
         prompt.getUserInput(stringInputScanner);
         this.room.addAttempt(this);
@@ -138,10 +164,9 @@ public class Player implements Runnable {
     private void presentCountdown(Prompt prompt) {
         StringInputScanner stringInputScanner = new StringInputScanner();
 
-        stringInputScanner.setMessage("You have " + DELAY + " seconds to think...\n");
-        prompt.displayMessage(stringInputScanner);
         for (int i = DELAY; i > 0; i--) {
-            stringInputScanner.setMessage(i + "...\n");
+            stringInputScanner.setMessage(CLEAR_SCREEN + "You have " + i + " seconds to think...\n" +
+                    DisplayMessages.displayString(this.currentQuestion));
             prompt.displayMessage(stringInputScanner);
             try {
                 Thread.sleep(1000);
@@ -155,12 +180,9 @@ public class Player implements Runnable {
         Set<String> stringOptions = new HashSet<>();
         stringOptions.add("");
 
-        StringInputScanner question = new StringSetInputScanner(stringOptions);
+        StringInputScanner question = new StringInputScanner();
 
-        String q = this.currentQuestion.getDescription() + "\n";
-        for (String answer : this.currentQuestion.getAnswers()) {
-            q += answer + "\n";
-        }
+        String q = DisplayMessages.displayString(this.currentQuestion);
 
         question.setMessage(q);
         System.out.println("Question: " + q);
@@ -217,16 +239,69 @@ public class Player implements Runnable {
 
     }
 
+    public void sendQuestion(Question question) {
+        this.currentQuestion = question;
+    }
+
+
+
+
+    //region Getters and Setters
+
     public Socket getPlayerSocket() {
         return playerSocket;
+    }
+
+    public void setPlayerSocket(Socket playerSocket) {
+        this.playerSocket = playerSocket;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Colors getColor() {
         return color;
+    }
+
+    public void setColor(Colors color) {
+        this.color = color;
+    }
+
+    public PlayerType getPlayerType() {
+        return playerType;
+    }
+
+    public void setPlayerType(PlayerType playerType) {
+        this.playerType = playerType;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public boolean isGameStarted() {
+        return gameStarted;
+    }
+
+    public void setGameStarted(boolean gameStarted) {
+        this.gameStarted = gameStarted;
     }
 
     public boolean isAnswerTime() {
@@ -237,19 +312,22 @@ public class Player implements Runnable {
         this.answerTime = answerTime;
     }
 
-    public void setPlayerType(PlayerType playerType) {
-        this.playerType = playerType;
+    public Question getCurrentQuestion() {
+        return currentQuestion;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setCurrentQuestion(Question currentQuestion) {
+        this.currentQuestion = currentQuestion;
     }
 
-    public void sendQuestion(Question q) {
-        this.currentQuestion = q;
+    public boolean isRoundEnd() {
+        return roundEnd;
     }
 
-    public void setGameStarted(boolean gameStarted) {
-        this.gameStarted = gameStarted;
+    public void setRoundEnd(boolean roundEnd) {
+        this.roundEnd = roundEnd;
     }
+
+    //endregion
+
 }
