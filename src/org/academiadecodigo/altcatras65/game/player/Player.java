@@ -131,7 +131,7 @@ public class Player implements Runnable {
     private void awaitButtonPress(Prompt prompt) {
         StringInputScanner stringInputScanner = new StringInputScanner();
         stringInputScanner.setMessage(CLEAR_SCREEN + "GO!\n" +
-                DisplayMessages.displayString(this.currentQuestion));
+                DisplayMessages.displayQuestion(this.currentQuestion));
         System.out.print(this.name + " GO!\n");
         prompt.getUserInput(stringInputScanner);
         this.room.addAttempt(this);
@@ -166,7 +166,7 @@ public class Player implements Runnable {
 
         for (int i = DELAY; i > 0; i--) {
             stringInputScanner.setMessage(CLEAR_SCREEN + "You have " + i + " seconds to think...\n" +
-                    DisplayMessages.displayString(this.currentQuestion));
+                    DisplayMessages.displayQuestion(this.currentQuestion));
             prompt.displayMessage(stringInputScanner);
             try {
                 Thread.sleep(1000);
@@ -182,7 +182,7 @@ public class Player implements Runnable {
 
         StringInputScanner question = new StringInputScanner();
 
-        String q = DisplayMessages.displayString(this.currentQuestion);
+        String q = DisplayMessages.displayQuestion(this.currentQuestion);
 
         question.setMessage(q);
         System.out.println("Question: " + q);

@@ -6,7 +6,7 @@ public class DisplayMessages {
     public static final int LINE_LENGTH = 80;
     public static final String resetColorASCII = "\u001B[0m";
 
-    public static String displayString(Question question) {
+    public static String displayQuestion(Question question) {
         StringBuilder stringBuilder = new StringBuilder();
         String questionStr = question.getDescription();
         String[] answers = question.getOptions();
