@@ -117,4 +117,8 @@ public class DisplayMessages {
                 "(__   ___________________________________________________________________   __)\n" +
                 "   | |                                                                   | |\n";
     }
+
+    public static String repeatingString(int length, String character) {
+        return new String(new char[length]).replace("\0", character);
+    }
 }
