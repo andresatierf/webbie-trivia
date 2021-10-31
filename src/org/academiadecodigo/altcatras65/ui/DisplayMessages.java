@@ -1,5 +1,6 @@
 package org.academiadecodigo.altcatras65.ui;
 
+import org.academiadecodigo.altcatras65.game.Colors;
 import org.academiadecodigo.altcatras65.game.question.Question;
 
 public class DisplayMessages {
@@ -20,10 +21,10 @@ public class DisplayMessages {
         stringBuilder.append(resetColorASCII);
 
         //answer1 and answer2
-        stringBuilder.append(dualBox(answers[0], answers[1], 1, 2));
+        stringBuilder.append(dualBox(answers[0], answers[1], 1, 2, 0));
 
         //answer3 and answer4
-        stringBuilder.append(dualBox(answers[2], answers[3], 3, 4));
+        stringBuilder.append(dualBox(answers[2], answers[3], 3, 4, 1));
 
         stringBuilder.append("\n");
 
@@ -53,16 +54,19 @@ public class DisplayMessages {
         int qSize = (strLength / 2) - (str.length() / 2);
 
         stringBuilder.append(colorASCI);
-        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "="));
-        stringBuilder.append("\n§" + new String(new char[strLength - 2]).replace("\0", " ") + "§");
-        stringBuilder.append("\n§" + new String(new char[qSize - 1]).replace("\0", " ") + resetColorASCII + str + colorASCI + new String(new char[qSize - evenCheck(str) - 1]).replace("\0", " ") + "§");
-        stringBuilder.append("\n§" + new String(new char[strLength - 2]).replace("\0", " ") + "§");
-        stringBuilder.append("\n" + new String(new char[strLength]).replace("\0", "="));
+        stringBuilder.append("\n" + repeatingString(strLength,"="));
+        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
+        stringBuilder.append("\n§" + repeatingString(qSize - 1," ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
+        stringBuilder.append("\n" + repeatingString(strLength,"="));
 
         return stringBuilder.toString();
     }
 
-    public static String dualBox(String str1, String str2, int n1, int n2) {
+    public static String dualBox(String str1, String str2, int n1, int n2, int n) {
+        String ANSIColor1 = "";
+        String ANSIColor2 = "";
+
         StringBuilder stringBuilder = new StringBuilder();
         int lineLength = LINE_LENGTH;
         int boxLength = (lineLength / 2) - 1;
@@ -71,35 +75,44 @@ public class DisplayMessages {
         int answerSize1 = (boxLength / 2) - (str1.length() / 2);
         int answerSize2 = (boxLength / 2) - (str2.length() / 2);
 
-        stringBuilder.append("\n" + new String(new char[boxLength / 2]).replace("\0", "-")
-                + n1
-                + new String(new char[(boxLength / 2)]).replace("\0", "-")
-                + new String(new char[2]).replace("\0", " ")
-                + new String(new char[boxLength / 2]).replace("\0", "-")
-                + n2
-                + new String(new char[(boxLength / 2)]).replace("\0", "-"));
-        stringBuilder.append("\n*" + new String(new char[boxLength - 2]).replace("\0", " ") + "*"
-                + new String(new char[2]).replace("\0", " ")
+        if(n == 0) {
+            ANSIColor1 = "\033[1;34m";
+            ANSIColor2 = "\033[1;31m";
+        } else if (n == 1) {
+            ANSIColor1 = "\033[1;32m";
+            ANSIColor2 = "\033[1;33m";
+        }
+
+        stringBuilder.append("\n" + repeatingString(boxLength / 2,"-")
+                + ANSIColor1 + n1 + Colors.WHITE.getAsciiColor()
+                + repeatingString(boxLength / 2,"-")
+                + repeatingString(2," ")
+                + repeatingString(boxLength / 2,"-")
+                + ANSIColor2 + n2 + Colors.WHITE.getAsciiColor()
+                + repeatingString(boxLength / 2,"-"));
+        stringBuilder.append("\n*" + repeatingString(boxLength - 2," ") + "*"
+                + repeatingString(2," ")
                 + '*'
-                + new String(new char[boxLength - 2]).replace("\0", " ")
+                + repeatingString(boxLength - 2," ")
                 + '*'
         );
 
 
-        stringBuilder.append("\n*" + new String(new char[answerSize1 - 1]).replace("\0", " ") + str1 + new String(new char[answerSize1 - evenCheck(str1)]).replace("\0", " ") + "*"
-                + new String(new char[2]).replace("\0", " ")
-                + "*" + new String(new char[answerSize2 - 1]).replace("\0", " ") + str2 + new String(new char[answerSize2 - evenCheck(str2)]).replace("\0", " ") + "*");
+        stringBuilder.append("\n*" + repeatingString(answerSize1 - 1," ") + str1 + repeatingString(answerSize1 - evenCheck(str1)," ") + "*"
+                + repeatingString(2," ")
+                + "*" + repeatingString(answerSize2 - 1," ") + str2 + repeatingString(answerSize2 - evenCheck(str2)," ") + "*");
 
 
-        stringBuilder.append("\n*" + new String(new char[boxLength - 2]).replace("\0", " ") + "*"
-                + new String(new char[2]).replace("\0", " ")
+        stringBuilder.append("\n*" + repeatingString(boxLength - 2," ") + "*"
+                + repeatingString(2," ")
                 + "*"
-                + new String(new char[boxLength - 2]).replace("\0", " ")
+                + repeatingString(boxLength - 2," ")
                 + "*"
         );
-        stringBuilder.append("\n" + new String(new char[boxLength]).replace("\0", "-")
-                + new String(new char[2]).replace("\0", " ")
-                + new String(new char[boxLength]).replace("\0", "-"));
+        stringBuilder.append("\n"
+                + repeatingString(boxLength,"-")
+                + repeatingString(2," ")
+                + repeatingString(boxLength,"-"));
         return stringBuilder.toString();
     }
 
