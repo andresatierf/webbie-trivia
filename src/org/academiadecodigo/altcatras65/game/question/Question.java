@@ -6,21 +6,16 @@ public class Question {
 
     private String description;
     private String answer;
-    private String[] answers;
-    private QuestionType qType;
+    private String[] options;
+    private QuestionType questionType;
     private ThemeType theme;
 
-    public Question() {
-        this.description = "test question";
-        this.answer = "Correct";
-        this.answers = new String[]{
-                "Correct",
-                "Wrong",
-                "more Wrong",
-                "just wrong"
-        };
-        this.qType = QuestionType.LOW;
-        this.theme = ThemeType.ALL;
+    public Question(String description, String answer, String[] options, QuestionType questionType, ThemeType theme) {
+        this.description = description;
+        this.answer = answer;
+        this.options = options;
+        this.questionType = questionType;
+        this.theme = theme;
     }
 
     //region Getters and Setters
@@ -41,20 +36,20 @@ public class Question {
         this.answer = answer;
     }
 
-    public String[] getAnswers() {
-        return answers;
+    public String[] getOptions() {
+        return options;
     }
 
-    public void setAnswers(String[] answers) {
-        this.answers = answers;
+    public void setOptions(String[] options) {
+        this.options = options;
     }
 
-    public QuestionType getqType() {
-        return qType;
+    public QuestionType getQuestionType() {
+        return questionType;
     }
 
-    public void setqType(QuestionType qType) {
-        this.qType = qType;
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
     }
 
     public ThemeType getTheme() {

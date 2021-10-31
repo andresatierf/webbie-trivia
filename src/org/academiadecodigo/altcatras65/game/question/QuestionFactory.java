@@ -22,7 +22,28 @@ public class QuestionFactory {
 
     private static List<Question> createAllQuestions() {
         return new LinkedList<Question>(Arrays.asList(
-                new Question()
+                new Question(
+                        "Question 1",
+                        "Correct answer",
+                        new String[] {
+                                "Correct answer",
+                                "Wrong answer",
+                                "More wrong answer",
+                                "Just wrong answer"},
+                        QuestionType.LOW,
+                        ThemeType.ALL
+                ),
+                new Question(
+                        "Question 2",
+                        "",
+                        new String[] {
+                                "",
+                                "",
+                                "",
+                                ""},
+                        QuestionType.LOW,
+                        ThemeType.ALL
+                )
         ));
     }
 
