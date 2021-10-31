@@ -12,7 +12,6 @@ import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -35,6 +34,7 @@ public class Room implements Runnable {
     private List<Player> roundAttempts;
 
     public Room() {
+        init();
     }
 
     public void init() {
@@ -45,6 +45,14 @@ public class Room implements Runnable {
         this.playerPool = Executors.newFixedThreadPool(DEFAULT_ROOM_SIZE);
         this.gameStarted = false;
         this.roundAttempts = new ArrayList<>();
+    }
+
+    public void nextRound() {
+        this.roundAttempts = new ArrayList<>();
+        for (Player player : this.players) {
+            player.setCurrentQuestion(null);
+            player.setRoundEnd(true);
+        }
     }
 
     public void start() {
@@ -61,13 +69,23 @@ public class Room implements Runnable {
         // loop
         while (gameStarted) {
 
+            if (currentQuestionIndex >= questions.size()) {
+                for (Player player : this.players) {
+                    player.setGameStarted(false);
+                    gameStarted = false;
+                }
+                break;
+            }
             Question question = questions.get(currentQuestionIndex);
 
             for (Player player : players) {
                 player.sendQuestion(question);
             }
 
-            while (true) {
+            // Wait for all players to press the button
+            while (this.roundAttempts.size() < this.players.size()) {
+
+                // TODO: 31/10/2021 fix needing all players to press the button
                 try {
                     Thread.sleep(50);
                 } catch (InterruptedException e) {
@@ -75,16 +93,31 @@ public class Room implements Runnable {
                 }
             }
 
-            //currentQuestionIndex++;
+            // ask for the answer
+
+            // check answer
+
+            // if wrong ask next
+
+
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            nextRound();
+            currentQuestionIndex++;
 
         }
-
+        messagePlayers("Thanks for playing\n");
     }
 
     private void awaitGameStart() {
         while (!gameStarted) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -134,7 +167,7 @@ public class Room implements Runnable {
 
     public void setTheme(ThemeType theme) {
         this.theme = theme;
-        notifyThemeChange();
+        messagePlayers("This room's theme is now '" + this.theme.getDescription() + "'\n");
     }
 
     public ThemeType getTheme() {
@@ -145,12 +178,12 @@ public class Room implements Runnable {
         return gameStarted;
     }
 
-    private void notifyThemeChange() {
+    private void messagePlayers(String string) {
         try {
             for (Player player : this.players) {
                 Prompt prompt = new Prompt(player.getPlayerSocket().getInputStream(), new PrintStream(player.getPlayerSocket().getOutputStream()));
                 StringInputScanner stringInputScanner = new StringInputScanner();
-                stringInputScanner.setMessage("\nThis room's theme is now '" + this.theme.getDescription() + "'");
+                stringInputScanner.setMessage(string);
                 prompt.displayMessage(stringInputScanner);
             }
         } catch (IOException e) {
@@ -167,8 +200,7 @@ public class Room implements Runnable {
 
     @Override
     public void run() {
-        // setup room
-        init();
+
         start();
 
     }
@@ -176,5 +208,7 @@ public class Room implements Runnable {
     public synchronized void addAttempt(Player player) {
         this.roundAttempts.add(player);
         player.setAnswerTime(true);
+        messagePlayers(player.getName() + " has pressed the button\n");
+        System.out.println(player.getName() + " pressed the button!");
     }
 }
