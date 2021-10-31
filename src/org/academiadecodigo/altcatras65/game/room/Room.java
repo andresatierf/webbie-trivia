@@ -51,6 +51,7 @@ public class Room implements Runnable {
 
     public void nextRound() {
         this.roundAttempts = new ArrayList<>();
+
         this.playerList.forEach(player -> {
             player.setCurrentQuestion(null);
             player.setRoundEnd(true);
@@ -83,10 +84,7 @@ public class Room implements Runnable {
             this.playerList.forEach(player -> player.setCurrentQuestion(question));
 
             // Wait for all players to press the button
-            int timer = 15 * 1000;
-            while (this.roundAttempts.size() < this.playerList.size() && timer > 0) {
-
-                timer -= 50;
+            while (this.roundAttempts.size() < this.playerList.size()) {
 
                 try {
                     Thread.sleep(50);
@@ -104,25 +102,10 @@ public class Room implements Runnable {
             }
 
             // ask for the answer
-            int counter = 0;
-            for (Player player : this.roundAttempts) {
-                this.playerList.forEach(player1 -> messagePlayers(Player.HEADER + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + " is answering..." + DisplayMessages.displayQuestion(player1.getCurrentQuestion())));
-                String playerGuess = question.getOptions()[player.askAnswer(counter) - 1];
-                if (playerGuess.equals(question.getAnswer())) {
-                    player.addPoints(question.getQuestionType().getWinValue() / (Math.min(counter, 4) + 1));
-                    break;
-                }
-                player.addPoints(question.getQuestionType().getLoseValue() / (Math.min(counter, 4) + 1));
-                this.playerList.forEach(player1 -> messagePlayers(Player.HEADER + player.getName() + " failed. Lets give someone else a try!" + DisplayMessages.displayQuestion(player1.getCurrentQuestion())));
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                counter++;
-            }
-            this.playerList.forEach(player -> messagePlayers(Player.HEADER + "Let's move on to the next question!" + DisplayMessages.displayQuestion(player.getCurrentQuestion())));
-            this.playerList.forEach(player -> player.setRoundEnd(true));
+            askForAnswers(question);
+
+            messagePlayers(Player.HEADER + "Let's move on to the next question!" + DisplayMessages.displayQuestion(question));
+
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
@@ -130,10 +113,35 @@ public class Room implements Runnable {
             }
 
             nextRound();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             currentQuestionIndex++;
 
         }
         messagePlayers("Thanks for playing\n");
+    }
+
+    private void askForAnswers(Question question) {
+        int counter = 0;
+        for (Player player : this.roundAttempts) {
+            messagePlayers(Player.HEADER + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + " is answering..." + DisplayMessages.displayQuestion(question));
+            String playerGuess = question.getOptions()[player.askAnswer(counter) - 1];
+            if (playerGuess.equals(question.getAnswer())) {
+                player.addPoints(question.getQuestionType().getWinValue() / (Math.min(counter, 4) + 1));
+                break;
+            }
+            player.addPoints(question.getQuestionType().getLoseValue() / (Math.min(counter, 4) + 1));
+            messagePlayers(Player.HEADER + player.getName() + " failed. Lets give someone else a try!" + DisplayMessages.displayQuestion(question));
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            counter++;
+        }
     }
 
     private void awaitGameStart() {
@@ -155,16 +163,6 @@ public class Room implements Runnable {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    private void nextQuestion(int questionIndex) {
-
-
-    }
-
-    private void awaitAnswers() {
-
     }
 
     private List<Question> createQuestions() {

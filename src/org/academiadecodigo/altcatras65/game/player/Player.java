@@ -220,7 +220,7 @@ public class Player implements Runnable {
 
     private void awaitButtonPress(Prompt prompt) {
         StringInputScanner stringInputScanner = new StringInputScanner();
-        stringInputScanner.setMessage(HEADER + "\n\u001B[32mGO!\u001B[0m (10 seconds to press a button)" +
+        stringInputScanner.setMessage(HEADER + "\n\u001B[32mGO!\u001B[0m" +
                 DisplayMessages.displayQuestion(this.currentQuestion));
         prompt.getUserInput(stringInputScanner);
         this.room.addAttempt(this);
