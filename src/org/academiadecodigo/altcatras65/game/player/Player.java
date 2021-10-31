@@ -1,7 +1,7 @@
 package org.academiadecodigo.altcatras65.game.player;
 
-import org.academiadecodigo.altcatras65.game.Colors;
-import org.academiadecodigo.altcatras65.game.ThemeType;
+import org.academiadecodigo.altcatras65.util.Colors;
+import org.academiadecodigo.altcatras65.util.ThemeType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.room.Room;
 import org.academiadecodigo.altcatras65.ui.DisplayMessages;
@@ -113,7 +113,7 @@ public class Player implements Runnable {
 
         this.name = prompt.getUserInput(askName).trim();
 
-        if (this.name.equalsIgnoreCase("tony")) {
+        if (this.name.equalsIgnoreCase("tony") || this.name.equalsIgnoreCase("ezequiel")) {
 
             askName.setMessage("Fuck you " + this.name);
             prompt.displayMessage(askName);
