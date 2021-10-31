@@ -14,9 +14,9 @@ public class QuestionFactory {
                 return createAllQuestions();
             case GENERAL:
                 return createGeneralProgrammingQuestions();
-            case OOP:
-            case FUNCTIONAL:
-            case INTERNET:
+            //case OOP:
+            //case FUNCTIONAL:
+            //case INTERNET:
             case WEB:
                 return createWebQuestions();
             default:

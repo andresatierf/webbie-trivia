@@ -9,15 +9,10 @@ public class DisplayMessages {
 
     public static String displayQuestion(Question question) {
         StringBuilder stringBuilder = new StringBuilder();
-        String questionStr = question.getDescription();
         String[] answers = question.getOptions();
-        //String questionColor =
-
-        int lineLength = LINE_LENGTH;
-        int questionLength = (lineLength / 2) - 1;
 
         //question
-        stringBuilder.append(boxedString(questionStr, question));
+        stringBuilder.append(boxedString(question));
         stringBuilder.append(resetColorASCII);
 
         //answer1 and answer2
@@ -46,8 +41,26 @@ public class DisplayMessages {
         else return 0;
     }
 
-    public static String boxedString(String str, Question question) {
+    public static String boxedString(Question question) {
+        String str = question.getDescription();
         String colorASCI = question.getQuestionType().getColor().getAsciiColor();
+        StringBuilder stringBuilder = new StringBuilder();
+        int strLength = LINE_LENGTH;
+
+        int qSize = (strLength / 2) - (str.length() / 2);
+
+        stringBuilder.append(colorASCI);
+        stringBuilder.append("\n" + repeatingString(strLength,"="));
+        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
+        stringBuilder.append("\n§" + repeatingString(qSize - 1," ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
+        stringBuilder.append("\n" + repeatingString(strLength,"="));
+
+        return stringBuilder.toString();
+    }
+
+    public static String boxedString(String str) {
+        String colorASCI = Colors.WHITE.getAsciiColor();
         StringBuilder stringBuilder = new StringBuilder();
         int strLength = LINE_LENGTH;
 

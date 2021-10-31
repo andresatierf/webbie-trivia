@@ -104,7 +104,13 @@ public class Room implements Runnable {
             // ask for the answer
             askForAnswers(question);
 
-            messagePlayers(Player.HEADER + "Let's move on to the next question!" + DisplayMessages.displayQuestion(question));
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            messagePlayers(Player.HEADER + "Let's move on to the next question!");
 
             try {
                 Thread.sleep(2000);
@@ -126,11 +132,14 @@ public class Room implements Runnable {
 
     private void askForAnswers(Question question) {
         int counter = 0;
+        Player winner = null;
         for (Player player : this.roundAttempts) {
             messagePlayers(Player.HEADER + player.getColor().getAsciiColor() + player.getName() + Colors.WHITE.getAsciiColor() + " is answering..." + DisplayMessages.displayQuestion(question));
             String playerGuess = question.getOptions()[player.askAnswer(counter) - 1];
             if (playerGuess.equals(question.getAnswer())) {
                 player.addPoints(question.getQuestionType().getWinValue() / (Math.min(counter, 4) + 1));
+                counter = -1;
+                winner = player;
                 break;
             }
             player.addPoints(question.getQuestionType().getLoseValue() / (Math.min(counter, 4) + 1));
@@ -142,6 +151,14 @@ public class Room implements Runnable {
             }
             counter++;
         }
+        String message = "";
+        if (counter != -1) {
+            message += Player.HEADER + "Every one failed\nThe correct answer was: '" + question.getAnswer() + "'\n";
+        } else {
+            message += Player.HEADER + winner.getName() + " has won this round\n";
+        }
+        message += "The current scores are:\n" + playerList.stream().map(player -> player.getName() + ": " + player.getScore() + "\n").reduce("", (acc, score) -> acc + score);
+        messagePlayers(message);
     }
 
     private void awaitGameStart() {
