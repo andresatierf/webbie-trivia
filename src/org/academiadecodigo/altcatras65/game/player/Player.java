@@ -201,7 +201,6 @@ public class Player implements Runnable {
             if (this.playerType == PlayerType.ADMIN) {
                 String[] options = new String[]{
                         "Start",
-                        "Change Theme",
                         "Wait"
                 };
                 MenuInputScanner menuInputScanner = new MenuInputScanner(options);
