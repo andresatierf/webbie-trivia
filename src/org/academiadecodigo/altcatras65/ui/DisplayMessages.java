@@ -1,6 +1,5 @@
 package org.academiadecodigo.altcatras65.ui;
 
-import org.academiadecodigo.altcatras65.game.Colors;
 import org.academiadecodigo.altcatras65.game.question.Question;
 
 public class DisplayMessages {
@@ -10,7 +9,7 @@ public class DisplayMessages {
     public static String displayString(Question question) {
         StringBuilder stringBuilder = new StringBuilder();
         String questionStr = question.getDescription();
-        String[] answers = question.getAnswers();
+        String[] answers = question.getOptions();
         //String questionColor =
 
         int lineLength = LINE_LENGTH;
@@ -33,7 +32,7 @@ public class DisplayMessages {
 
     private String questionColor(Question question) {
         String color = null;
-        switch (question.getqType().getColor()) {
+        switch (question.getQuestionType().getColor()) {
 
         }
 
@@ -47,7 +46,7 @@ public class DisplayMessages {
     }
 
     public static String boxedString(String str, Question question) {
-        String colorASCI = question.getqType().getColor().getAsciiColor();
+        String colorASCI = question.getQuestionType().getColor().getAsciiColor();
         StringBuilder stringBuilder = new StringBuilder();
         int strLength = LINE_LENGTH;
 
@@ -116,6 +115,6 @@ public class DisplayMessages {
                 "   | |                                                                   | |\n" +
                 " __| |___________________________________________________________________| |__\n" +
                 "(__   ___________________________________________________________________   __)\n" +
-                "   | |                                                                   | |";
+                "   | |                                                                   | |\n";
     }
 }
