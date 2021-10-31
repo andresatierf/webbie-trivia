@@ -1,8 +1,6 @@
 package org.academiadecodigo.altcatras65.game.question;
 
-import org.academiadecodigo.altcatras65.game.Colors;
-
-import java.awt.*;
+import org.academiadecodigo.altcatras65.util.Colors;
 
 public enum QuestionType {
     HIGH(72,-36, Colors.RED),

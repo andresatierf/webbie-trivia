@@ -1,7 +1,7 @@
 package org.academiadecodigo.altcatras65.game.question;
 
-import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.room.Room;
+import org.academiadecodigo.altcatras65.util.ThemeType;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -305,7 +305,7 @@ public class QuestionFactory {
                                 "Language"
                         },
                         QuestionType.MEDIUM,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "What is the result of boolean result = 10<5;?",
@@ -317,7 +317,7 @@ public class QuestionFactory {
                                 "10"
                         },
                         QuestionType.HIGH,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "What is a Algorithm?",
@@ -325,11 +325,11 @@ public class QuestionFactory {
                         new String[]{
                                 "A set of instructions",
                                 "A fancy word",
-                                "",
-                                ""
+                                "A problem",
+                                "A sorter"
                         },
                         QuestionType.HIGH,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "Resolving errors in programming is called?",
@@ -341,7 +341,7 @@ public class QuestionFactory {
                                 "Refixing"
                         },
                         QuestionType.LOW,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "Which of the following is not a high level programming language?",
@@ -353,7 +353,7 @@ public class QuestionFactory {
                                 "Kotlin"
                         },
                         QuestionType.MEDIUM,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "What is a compiler?",
@@ -361,11 +361,11 @@ public class QuestionFactory {
                         new String[]{
                                 "Program",
                                 "Interpreter",
-                                "",
-                                ""
+                                "Package",
+                                "Hardware"
                         },
                         QuestionType.HIGH,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "What is a Interpreter?",
@@ -377,7 +377,7 @@ public class QuestionFactory {
                                 "Network Protocol"
                         },
                         QuestionType.HIGH,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "Which numeral system can the machine understand?",
@@ -389,7 +389,7 @@ public class QuestionFactory {
                                 "Hexa"
                         },
                         QuestionType.MEDIUM,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "At run-time, a Java program is nothing more than objects ‘talking’ to?",
@@ -401,7 +401,7 @@ public class QuestionFactory {
                                 "Other binders"
                         },
                         QuestionType.LOW,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 ),
                 new Question(
                         "Which of the following is the correct way of making a string in Java?",
@@ -413,7 +413,7 @@ public class QuestionFactory {
                                 "String text = \"text\";"
                         },
                         QuestionType.MEDIUM,
-                        ThemeType.WEB
+                        ThemeType.GENERAL
                 )
         ));
 

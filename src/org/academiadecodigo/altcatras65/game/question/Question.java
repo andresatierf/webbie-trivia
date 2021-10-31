@@ -1,6 +1,6 @@
 package org.academiadecodigo.altcatras65.game.question;
 
-import org.academiadecodigo.altcatras65.game.ThemeType;
+import org.academiadecodigo.altcatras65.util.ThemeType;
 
 public class Question {
 

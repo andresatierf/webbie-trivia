@@ -1,7 +1,7 @@
 package org.academiadecodigo.altcatras65.ui;
 
-import org.academiadecodigo.altcatras65.game.Colors;
 import org.academiadecodigo.altcatras65.game.question.Question;
+import org.academiadecodigo.altcatras65.util.Colors;
 
 public class DisplayMessages {
     public static final int LINE_LENGTH = 80;
@@ -50,11 +50,11 @@ public class DisplayMessages {
         int qSize = (strLength / 2) - (str.length() / 2);
 
         stringBuilder.append(colorASCI);
-        stringBuilder.append("\n" + repeatingString(strLength,"="));
-        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
-        stringBuilder.append("\n§" + repeatingString(qSize - 1," ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
-        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
-        stringBuilder.append("\n" + repeatingString(strLength,"="));
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(qSize - 1, " ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
 
         return stringBuilder.toString();
     }
@@ -67,11 +67,28 @@ public class DisplayMessages {
         int qSize = (strLength / 2) - (str.length() / 2);
 
         stringBuilder.append(colorASCI);
-        stringBuilder.append("\n" + repeatingString(strLength,"="));
-        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
-        stringBuilder.append("\n§" + repeatingString(qSize - 1," ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
-        stringBuilder.append("\n§" + repeatingString(strLength - 2," ") + "§");
-        stringBuilder.append("\n" + repeatingString(strLength,"="));
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(qSize - 1, " ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
+
+        return stringBuilder.toString();
+    }
+
+    public static String boxedString(String str, Colors color) {
+        String colorASCI = color.getAsciiColor();
+        StringBuilder stringBuilder = new StringBuilder();
+        int strLength = LINE_LENGTH;
+
+        int qSize = (strLength / 2) - (str.length() / 2);
+
+        stringBuilder.append(colorASCI);
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(qSize - 1, " ") + resetColorASCII + str + colorASCI + repeatingString(qSize - evenCheck(str) - 1, " ") + "§");
+        stringBuilder.append("\n§" + repeatingString(strLength - 2, " ") + "§");
+        stringBuilder.append("\n" + repeatingString(strLength, "="));
 
         return stringBuilder.toString();
     }
@@ -88,7 +105,7 @@ public class DisplayMessages {
         int answerSize1 = (boxLength / 2) - (str1.length() / 2);
         int answerSize2 = (boxLength / 2) - (str2.length() / 2);
 
-        if(n == 0) {
+        if (n == 0) {
             ANSIColor1 = "\033[1;34m";
             ANSIColor2 = "\033[1;31m";
         } else if (n == 1) {
@@ -96,52 +113,53 @@ public class DisplayMessages {
             ANSIColor2 = "\033[1;33m";
         }
 
-        stringBuilder.append("\n" + repeatingString(boxLength / 2,"-")
+        stringBuilder.append("\n" + repeatingString(boxLength / 2, "-")
                 + ANSIColor1 + n1 + Colors.WHITE.getAsciiColor()
-                + repeatingString(boxLength / 2,"-")
-                + repeatingString(2," ")
-                + repeatingString(boxLength / 2,"-")
+                + repeatingString(boxLength / 2, "-")
+                + repeatingString(2, " ")
+                + repeatingString(boxLength / 2, "-")
                 + ANSIColor2 + n2 + Colors.WHITE.getAsciiColor()
-                + repeatingString(boxLength / 2,"-"));
-        stringBuilder.append("\n*" + repeatingString(boxLength - 2," ") + "*"
-                + repeatingString(2," ")
+                + repeatingString(boxLength / 2, "-"));
+        stringBuilder.append("\n*" + repeatingString(boxLength - 2, " ") + "*"
+                + repeatingString(2, " ")
                 + '*'
-                + repeatingString(boxLength - 2," ")
+                + repeatingString(boxLength - 2, " ")
                 + '*'
         );
 
 
-        stringBuilder.append("\n*" + repeatingString(answerSize1 - 1," ") + str1 + repeatingString(answerSize1 - evenCheck(str1)," ") + "*"
-                + repeatingString(2," ")
-                + "*" + repeatingString(answerSize2 - 1," ") + str2 + repeatingString(answerSize2 - evenCheck(str2)," ") + "*");
+        stringBuilder.append("\n*" + repeatingString(answerSize1 - 1, " ") + str1 + repeatingString(answerSize1 - evenCheck(str1), " ") + "*"
+                + repeatingString(2, " ")
+                + "*" + repeatingString(answerSize2 - 1, " ") + str2 + repeatingString(answerSize2 - evenCheck(str2), " ") + "*");
 
 
-        stringBuilder.append("\n*" + repeatingString(boxLength - 2," ") + "*"
-                + repeatingString(2," ")
+        stringBuilder.append("\n*" + repeatingString(boxLength - 2, " ") + "*"
+                + repeatingString(2, " ")
                 + "*"
-                + repeatingString(boxLength - 2," ")
+                + repeatingString(boxLength - 2, " ")
                 + "*"
         );
         stringBuilder.append("\n"
-                + repeatingString(boxLength,"-")
-                + repeatingString(2," ")
-                + repeatingString(boxLength,"-"));
+                + repeatingString(boxLength, "-")
+                + repeatingString(2, " ")
+                + repeatingString(boxLength, "-"));
         return stringBuilder.toString();
     }
 
     public static String getStartMessage() {
-        return "  _| |___________________________________________________________________| |__\n" +
+        return Colors.CYAN.getAsciiColor() + "  _| |___________________________________________________________________| |__\n" +
                 "(__   ___________________________________________________________________   __)\n" +
                 "   | |                                                                   | |\n" +
-                "   | |    __    __     _     _     _        _____      _       _         | |\n" +
-                "   | |   / / /\\ \\ \\___| |__ | |__ (_) ___  /__   \\_ __(_)_   _(_) __ _   | |\n" +
-                "   | |   \\ \\/  \\/ / _ \\ '_ \\| '_ \\| |/ _ \\   / /\\/ '__| \\ \\ / / |/ _` |  | |\n" +
-                "   | |    \\  /\\  /  __/ |_) | |_) | |  __/  / /  | |  | |\\ V /| | (_| |  | |\n" +
-                "   | |     \\/  \\/ \\___|_.__/|_.__/|_|\\___|  \\/   |_|  |_| \\_/ |_|\\__,_|  | |\n" +
+                "   | |" + Colors.YELLOW.getAsciiColor() + "    __    __     _     _     _        _____      _       _         " + Colors.CYAN.getAsciiColor() + "| |\n" +
+                "   | |" + Colors.YELLOW.getAsciiColor() + "   / / /\\ \\ \\___| |__ | |__ (_) ___  /__   \\_ __(_)_   _(_) __ _   " + Colors.CYAN.getAsciiColor() + "| |\n" +
+                "   | |" + Colors.YELLOW.getAsciiColor() + "   \\ \\/  \\/ / _ \\ '_ \\| '_ \\| |/ _ \\   / /\\/ '__| \\ \\ / / |/ _` |  " + Colors.CYAN.getAsciiColor() + "| |\n" +
+                "   | |" + Colors.YELLOW.getAsciiColor() + "    \\  /\\  /  __/ |_) | |_) | |  __/  / /  | |  | |\\ V /| | (_| |  " + Colors.CYAN.getAsciiColor() + "| |\n" +
+                "   | |" + Colors.YELLOW.getAsciiColor() + "     \\/  \\/ \\___|_.__/|_.__/|_|\\___|  \\/   |_|  |_| \\_/ |_|\\__,_|  " + Colors.CYAN.getAsciiColor() + "| |\n" +
                 "   | |                                                                   | |\n" +
                 " __| |___________________________________________________________________| |__\n" +
                 "(__   ___________________________________________________________________   __)\n" +
-                "   | |                                                                   | |\n";
+                "   | |                                                                   | |\n" +
+                Colors.WHITE.getAsciiColor();
     }
 
     public static String repeatingString(int length, String character) {

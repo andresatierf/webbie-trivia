@@ -1,14 +1,14 @@
 package org.academiadecodigo.altcatras65.game.room;
 
 
-import org.academiadecodigo.altcatras65.game.Colors;
-import org.academiadecodigo.altcatras65.game.ThemeType;
 import org.academiadecodigo.altcatras65.game.player.Player;
 import org.academiadecodigo.altcatras65.game.player.PlayerFactory;
 import org.academiadecodigo.altcatras65.game.player.PlayerType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.question.QuestionFactory;
 import org.academiadecodigo.altcatras65.ui.DisplayMessages;
+import org.academiadecodigo.altcatras65.util.Colors;
+import org.academiadecodigo.altcatras65.util.ThemeType;
 import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 
@@ -23,7 +23,7 @@ import java.util.concurrent.Executors;
 
 public class Room implements Runnable {
 
-    public static final int DEFAULT_ROOM_SIZE = 2;
+    public static final int DEFAULT_ROOM_SIZE = 4;
     public static final int DEFAULT_MAX_QUESTIONS = 2;
 
     private ExecutorService playerPool;
@@ -127,7 +127,27 @@ public class Room implements Runnable {
             currentQuestionIndex++;
 
         }
-        messagePlayers("Thanks for playing\n");
+        Player winner = getWinner();
+
+        messagePlayers(Player.HEADER + DisplayMessages.boxedString("The winner is " + winner.getColor().getAsciiColor() + winner.getName() + Colors.WHITE.getAsciiColor() + "! Thanks for playing", winner.getColor()) + getScores());
+    }
+
+    private Player getWinner() {
+        Player winner = null;
+        int high = 0;
+        for (Player player : playerList) {
+            if (player.getScore() > high) {
+                high = player.getScore();
+                winner = player;
+            }
+        }
+        return winner;
+    }
+
+    public String getScores() {
+        return this.playerList.stream()
+                .map(player -> player.getColor().getAsciiColor() + player.getName() + ": " + Colors.WHITE.getAsciiColor() + player.getScore() + "\n")
+                .reduce("", (acc, score) -> acc + score);
     }
 
     private void askForAnswers(Question question) {
@@ -157,7 +177,7 @@ public class Room implements Runnable {
         } else {
             message += Player.HEADER + winner.getName() + " has won this round\n";
         }
-        message += "The current scores are:\n" + playerList.stream().map(player -> player.getName() + ": " + player.getScore() + "\n").reduce("", (acc, score) -> acc + score);
+        message += "The current scores are:\n" + getScores();
         messagePlayers(message);
     }
 
@@ -173,7 +193,7 @@ public class Room implements Runnable {
     }
 
     private void awaitPlayers() {
-        while (this.playerList.size() < this.maxRoomSize) {
+        while (this.playerList.size() < this.maxRoomSize && !gameStarted) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {

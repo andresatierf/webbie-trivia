@@ -1,10 +1,10 @@
 package org.academiadecodigo.altcatras65.game.player;
 
-import org.academiadecodigo.altcatras65.util.Colors;
-import org.academiadecodigo.altcatras65.util.ThemeType;
 import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.room.Room;
 import org.academiadecodigo.altcatras65.ui.DisplayMessages;
+import org.academiadecodigo.altcatras65.util.Colors;
+import org.academiadecodigo.altcatras65.util.ThemeType;
 import org.academiadecodigo.bootcamp.Prompt;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
 import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
@@ -14,7 +14,8 @@ import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.Socket;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class Player implements Runnable {

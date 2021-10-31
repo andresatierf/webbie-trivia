@@ -1,14 +1,14 @@
 package org.academiadecodigo.altcatras65.network;
 
+import org.academiadecodigo.altcatras65.game.room.Room;
+import org.academiadecodigo.altcatras65.game.room.RoomFactory;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import org.academiadecodigo.altcatras65.game.room.Room;
-import org.academiadecodigo.altcatras65.game.room.RoomFactory;
 
 public class Server {
     private ServerSocket serverSocket;

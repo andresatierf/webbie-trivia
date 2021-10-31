@@ -1,4 +1,4 @@
-package org.academiadecodigo.altcatras65.game;
+package org.academiadecodigo.altcatras65.util;
 
 public enum ThemeType {
     ALL("All Themes"),
