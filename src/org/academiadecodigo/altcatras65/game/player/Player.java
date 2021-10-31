@@ -6,6 +6,8 @@ import org.academiadecodigo.altcatras65.game.question.Question;
 import org.academiadecodigo.altcatras65.game.room.Room;
 import org.academiadecodigo.altcatras65.ui.DisplayMessages;
 import org.academiadecodigo.bootcamp.Prompt;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerInputScanner;
+import org.academiadecodigo.bootcamp.scanners.integer.IntegerRangeInputScanner;
 import org.academiadecodigo.bootcamp.scanners.menu.MenuInputScanner;
 import org.academiadecodigo.bootcamp.scanners.string.StringInputScanner;
 
@@ -19,6 +21,7 @@ public class Player implements Runnable {
 
     public static final int DELAY = 5;
     public static final String CLEAR_SCREEN = new String(new char[100]).replace("\0", "\n");
+    public static final String HEADER = CLEAR_SCREEN + DisplayMessages.getStartMessage();
 
     private Socket playerSocket;
     private String name;
@@ -47,7 +50,7 @@ public class Player implements Runnable {
                     new PrintStream(this.playerSocket.getOutputStream()));
 
             StringInputScanner header = new StringInputScanner();
-            header.setMessage(CLEAR_SCREEN + DisplayMessages.getStartMessage());
+            header.setMessage(HEADER);
 
             // ask name
             prompt.displayMessage(header);
@@ -61,7 +64,7 @@ public class Player implements Runnable {
             if (this.playerType.equals(PlayerType.ADMIN)) {
 
                 prompt.displayMessage(header);
-                chooseTheme(prompt);
+                askTheme(prompt);
 
             } else {
 
@@ -70,15 +73,7 @@ public class Player implements Runnable {
 
             }
 
-            // Waiting for game to start
-            while (!this.gameStarted) {
-
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+            awaitGameStart();
 
             while (gameStarted) {
                 this.roundEnd = false;
@@ -94,8 +89,6 @@ public class Player implements Runnable {
 
                 awaitButtonPress(prompt);
 
-                waitToAnswer();
-
                 awaitNextRound();
 
             }
@@ -106,100 +99,34 @@ public class Player implements Runnable {
 
     }
 
-    private void awaitNextRound() {
-        while (!roundEnd) {
+    public void addPoints(int points) {
+        this.score += points;
+    }
+
+    //region Ask methods
+
+    private void askPlayerName(Prompt prompt) throws IOException {
+
+        StringInputScanner askName = new StringInputScanner();
+
+        askName.setMessage("What's your name?\n");
+
+        this.name = prompt.getUserInput(askName).trim();
+
+        if (this.name.equalsIgnoreCase("tony")) {
+
+            askName.setMessage("Fuck you " + this.name);
+            prompt.displayMessage(askName);
+
             try {
-                Thread.sleep(50);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-    }
 
-    private void waitToAnswer() {
-        while (answerTime & !roundEnd) {
+        System.out.println(this.name + " joined the room");
 
-
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void awaitButtonPress(Prompt prompt) {
-        StringInputScanner stringInputScanner = new StringInputScanner();
-        stringInputScanner.setMessage(CLEAR_SCREEN + "GO!\n" +
-                DisplayMessages.displayQuestion(this.currentQuestion));
-        System.out.print(this.name + " GO!\n");
-        prompt.getUserInput(stringInputScanner);
-        this.room.addAttempt(this);
-    }
-
-    private void presentTheme(Prompt prompt) {
-        StringInputScanner stringInputScanner = new StringInputScanner();
-        stringInputScanner.setMessage("The theme for this game is " + this.room.getTheme().getDescription() + "\n");
-        prompt.displayMessage(stringInputScanner);
-    }
-
-    private void chooseTheme(Prompt prompt) {
-        String[] options = null;
-
-        options = Stream.of(ThemeType.values())
-                .map(ThemeType::getDescription)
-                .toArray(String[]::new);
-
-        MenuInputScanner askTheme = new MenuInputScanner(options);
-
-        askTheme.setMessage("What theme do you want?");
-
-        int themeIndex = prompt.getUserInput(askTheme) - 1;
-
-        this.room.setTheme(ThemeType.values()[themeIndex]);
-
-        System.out.println(this.name + " decided to play " + this.room.getTheme().getDescription());
-    }
-
-    private void presentCountdown(Prompt prompt) {
-        StringInputScanner stringInputScanner = new StringInputScanner();
-
-        for (int i = DELAY; i > 0; i--) {
-            stringInputScanner.setMessage(CLEAR_SCREEN + "You have " + i + " seconds to think...\n" +
-                    DisplayMessages.displayQuestion(this.currentQuestion));
-            prompt.displayMessage(stringInputScanner);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private void presentQuestion(Prompt prompt) {
-        Set<String> stringOptions = new HashSet<>();
-        stringOptions.add("");
-
-        StringInputScanner question = new StringInputScanner();
-
-        String q = DisplayMessages.displayQuestion(this.currentQuestion);
-
-        question.setMessage(q);
-        System.out.println("Question: " + q);
-
-
-        prompt.displayMessage(question);
-    }
-
-    private void awaitQuestion() {
-
-        while (this.currentQuestion == null) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void askPlayerColor(Prompt prompt) {
@@ -221,30 +148,133 @@ public class Player implements Runnable {
         System.out.println(this.name + " chose " + this.color.getName());
     }
 
-    private void askPlayerName(Prompt prompt) throws IOException {
+    private void askTheme(Prompt prompt) {
+        String[] options = null;
 
-        StringInputScanner askName = new StringInputScanner();
+        options = Stream.of(ThemeType.values())
+                .map(ThemeType::getDescription)
+                .toArray(String[]::new);
 
-        askName.setMessage("What's your name?\n");
+        MenuInputScanner askTheme = new MenuInputScanner(options);
 
-        this.name = prompt.getUserInput(askName).trim();
+        askTheme.setMessage("What theme do you want?");
 
-        if (this.name.equalsIgnoreCase("tony")) {
+        int themeIndex = prompt.getUserInput(askTheme) - 1;
 
-            new PrintStream(this.playerSocket.getOutputStream()).println("Fuck you " + this.name);
+        this.room.setTheme(ThemeType.values()[themeIndex]);
 
+        System.out.println(this.name + " decided to play " + this.room.getTheme().getDescription());
+    }
+
+    public int askAnswer(int guesser) {
+        try {
+            Prompt prompt = new Prompt(this.getPlayerSocket().getInputStream(), new PrintStream(this.getPlayerSocket().getOutputStream()));
+            IntegerInputScanner integerInputScanner = new IntegerRangeInputScanner(1, 4);
+            String[] first = new String[]{
+                    "So Flash... what do you think the answer is?\n",
+                    "Mr. Quick Fingers over here, what is your choice?\n",
+                    "That was quick! What are you thinking about?\n",
+                    "That was fast, let's hope you're slower at other things. What's your answer?\n"
+            };
+            String[] others = new String[]{
+                    "Guess he was wrong... what do you think the answer is?\n",
+                    "Oopsies, they were fast but missed. What is your choice?\n",
+                    "The fastest is not always right! What are you thinking about?\n",
+                    "Slow and steady wins the race! Your guess is?\n"
+            };
+            integerInputScanner.setMessage(HEADER + this.color.getAsciiColor() + "You" + Colors.WHITE.getAsciiColor() + " are answering..." + DisplayMessages.displayQuestion(this.currentQuestion) + (guesser == 0 ? first : others)[(int) Math.floor(Math.random() * 4)]);
+            return prompt.getUserInput(integerInputScanner);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return -1;
         }
 
-        System.out.println(this.name + " joined the room");
-
     }
 
-    public void sendQuestion(Question question) {
-        this.currentQuestion = question;
+    //endregion
+
+    //region Wait methods
+
+    private void awaitGameStart() {
+        while (!this.gameStarted) {
+
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
+    private void awaitQuestion() {
 
+        while (this.currentQuestion == null) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private void awaitButtonPress(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringInputScanner();
+        stringInputScanner.setMessage(HEADER + "\n\u001B[32mGO!\u001B[0m (10 seconds to press a button)" +
+                DisplayMessages.displayQuestion(this.currentQuestion));
+        prompt.getUserInput(stringInputScanner);
+        this.room.addAttempt(this);
+    }
+
+    private void awaitNextRound() {
+        while (!roundEnd) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //endregion
+
+    //region Present Methods
+
+    private void presentTheme(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringInputScanner();
+        stringInputScanner.setMessage(HEADER + "The theme for this game is '" + this.room.getTheme().getDescription() + "'\n");
+        prompt.displayMessage(stringInputScanner);
+    }
+
+    private void presentQuestion(Prompt prompt) {
+        Set<String> stringOptions = new HashSet<>();
+        stringOptions.add("");
+
+        StringInputScanner question = new StringInputScanner();
+
+        String q = DisplayMessages.displayQuestion(this.currentQuestion);
+
+        question.setMessage(HEADER + q);
+
+        prompt.displayMessage(question);
+    }
+
+    private void presentCountdown(Prompt prompt) {
+        StringInputScanner stringInputScanner = new StringInputScanner();
+
+        for (int i = DELAY; i > 0; i--) {
+            stringInputScanner.setMessage(HEADER + "\nYou have \u001B[36m" + i + "\u001B[0m seconds to think..." +
+                    DisplayMessages.displayQuestion(this.currentQuestion));
+            prompt.displayMessage(stringInputScanner);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //endregion
 
     //region Getters and Setters
 
