@@ -13,7 +13,7 @@ import org.academiadecodigo.altcatras65.game.room.RoomFactory;
 public class Server {
     private ServerSocket serverSocket;
     private LinkedList<Room> roomList;
-    private ExecutorService cachedPool;
+    private ExecutorService roomPool;
 
     /** Starts a new server and invokes method listen
      *
@@ -24,7 +24,7 @@ public class Server {
         try {
             serverSocket = new ServerSocket(port);
             roomList = new LinkedList<>();
-            cachedPool = Executors.newCachedThreadPool();
+            roomPool = Executors.newCachedThreadPool();
             createRoom();
             listen();
         } catch (IOException e) {
@@ -54,7 +54,7 @@ public class Server {
     private void createRoom() {
         Room room = RoomFactory.createRoom();
         roomList.add(room);
-        cachedPool.submit(room);
+        roomPool.submit(room);
 
     }
 
@@ -64,7 +64,7 @@ public class Server {
      */
 
     private void serve(Socket clientSocket) {
-        if(roomList.getLast().getPlayers().size() >= roomList.getLast().getMaxRoomSize() || roomList.getLast().isGameStarted()) {
+        if(roomList.getLast().getPlayerList().size() >= roomList.getLast().getMaxRoomSize() || roomList.getLast().isGameStarted()) {
             createRoom();
             //serve(clientSocket);
         }
