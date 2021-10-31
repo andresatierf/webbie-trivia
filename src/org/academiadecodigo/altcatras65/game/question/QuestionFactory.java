@@ -1,6 +1,7 @@
 package org.academiadecodigo.altcatras65.game.question;
 
 import org.academiadecodigo.altcatras65.game.ThemeType;
+import org.academiadecodigo.altcatras65.game.room.Room;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -25,7 +26,7 @@ public class QuestionFactory {
     }
 
     private static List<Question> createWebQuestions() {
-        return new LinkedList<Question>(Arrays.asList(
+        LinkedList<Question> webQuestionsList = new LinkedList<Question>(Arrays.asList(
                 new Question(
                         "What was the World Wide Web developed for?",
                         "Information sharing",
@@ -138,9 +139,9 @@ public class QuestionFactory {
                         "The HTTP Status Code 400 stands for?",
                         "Bad Request",
                         new String[]{
-                                "Bad Request",
-                                "OK",
                                 "Forbidden",
+                                "OK",
+                                "Bad Request",
                                 "Unauthorised"
                         },
                         QuestionType.LOW,
@@ -198,10 +199,10 @@ public class QuestionFactory {
                         "When was the Ethernet invented?",
                         "1970",
                         new String[]{
-                                "1970",
+                                "1969",
                                 "1989",
                                 "1974",
-                                "1969"
+                                "1970"
                         },
                         QuestionType.HIGH,
                         ThemeType.WEB
@@ -246,10 +247,10 @@ public class QuestionFactory {
                         "What Address is present on all ethernet network interfaces?",
                         "The MAC address",
                         new String[]{
-                                "The MAC address",
+                                "Uri",
                                 "IP Address",
                                 "URL",
-                                "URI"
+                                "The MAC address"
                         },
                         QuestionType.LOW,
                         ThemeType.WEB
@@ -267,17 +268,33 @@ public class QuestionFactory {
                         ThemeType.WEB
                 )
         ));
+
+        LinkedList<Question> finalWebQuestionsList = new LinkedList<>();
+        for (int i = 0; i < Room.DEFAULT_MAX_QUESTIONS; i++) {
+            int rand = (int) (Math.random() * webQuestionsList.size());
+            finalWebQuestionsList.add(webQuestionsList.get(rand));
+            webQuestionsList.remove(rand);
+        }
+
+        return finalWebQuestionsList;
     }
 
     private static List<Question> createAllQuestions() {
         LinkedList<Question> questionsAll = new LinkedList<>();
         questionsAll.addAll(createWebQuestions());
         questionsAll.addAll(createGeneralProgrammingQuestions());
-        return questionsAll;
+
+        LinkedList<Question> finalList = new LinkedList<>();
+        for (int i = 0; i < Room.DEFAULT_MAX_QUESTIONS; i++) {
+            int rand = (int) (Math.random() * questionsAll.size());
+            finalList.add(questionsAll.get(rand));
+            questionsAll.remove(rand);
+        }
+        return finalList;
     }
 
     private static List<Question> createGeneralProgrammingQuestions() {
-        return new LinkedList<Question>(Arrays.asList(
+        LinkedList<Question> generalProgrammingQuestionsList = new LinkedList<Question>(Arrays.asList(
                 new Question(
                         "What is a variable?",
                         "Container",
@@ -349,7 +366,64 @@ public class QuestionFactory {
                         },
                         QuestionType.HIGH,
                         ThemeType.WEB
+                ),
+                new Question(
+                        "What is a Interpreter?",
+                        "Program",
+                        new String[]{
+                                "Program",
+                                "Compiler",
+                                "Analyzer",
+                                "Network Protocol"
+                        },
+                        QuestionType.HIGH,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "Which numeral system can the machine understand?",
+                        "Binary",
+                        new String[]{
+                                "Octal",
+                                "Decimal",
+                                "Binary",
+                                "Hexa"
+                        },
+                        QuestionType.MEDIUM,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "At run-time, a Java program is nothing more than objects ‘talking’ to?",
+                        "Other objects",
+                        new String[]{
+                                "Other methods",
+                                "Other classes",
+                                "Other objects",
+                                "Other binders"
+                        },
+                        QuestionType.LOW,
+                        ThemeType.WEB
+                ),
+                new Question(
+                        "Which of the following is the correct way of making a string in Java?",
+                        "String text = \"text\";",
+                        new String[]{
+                                "String \"Text\";",
+                                "String text = 'text';",
+                                "String text = \"text\"",
+                                "String text = \"text\";"
+                        },
+                        QuestionType.MEDIUM,
+                        ThemeType.WEB
                 )
         ));
+
+        LinkedList<Question> generalProgrammingQuestionsListFinal = new LinkedList<>();
+        for (int i = 0; i < Room.DEFAULT_MAX_QUESTIONS; i++) {
+            int rand = (int) (Math.random() * generalProgrammingQuestionsList.size());
+            generalProgrammingQuestionsListFinal.add(generalProgrammingQuestionsList.get(rand));
+            generalProgrammingQuestionsList.remove(rand);
+        }
+
+        return generalProgrammingQuestionsListFinal;
     }
 }
