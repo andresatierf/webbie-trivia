@@ -1,6 +1,11 @@
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/47696178/139610245-739f1934-e8a5-4018-be17-2b82b39b2979.png" />
+</p>
+
 ---
 
-# Hello everyone, welcome to Webbie-Trivia!!
+
+  # Hello everyone, welcome to Webbie-Trivia!!
 
   Webbie-Trivia is a Quiz game that see the players anwsering trivia questions while competing in the fictional game show Webbie!
 Created specifically with multiplayer party gamming in mind.
@@ -15,5 +20,4 @@ if you fail you lose points.
   One of the core objectives of the game is to help in the learning proccess and ofcourse to HAVE FUN! 
   
   ### **Speaking of fun, hope you all have a blast with our game!**
-  
 ---
