@@ -14,7 +14,7 @@ Created specifically with multiplayer party gaming in mind.
 featuring ten individual rounds. Each round has a color, red for high, yellow for medium and white for low difficulty.
 
   Each round consists of a question where you have to be the fastest hitting the buzz (by typing anything and pressing Enter) so you can attempt
-to give the correct answser and win full points... otherwise... the next player will attempt and win a percentage of those points... and remember,
+to give the correct answer and win full points... otherwise... the next player will attempt and win a percentage of those points... and remember,
 if you fail you lose points.
 
   One of the core objectives of the game is to help in the learning proccess and ofcourse to HAVE FUN! 
