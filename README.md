@@ -20,4 +20,9 @@ if you fail you lose points.
   One of the core objectives of the game is to help in the learning proccess and ofcourse to HAVE FUN! 
   
   ### **Speaking of fun, hope you all have a blast with our game!**
+  
+  ### Collaborators: 
+  + Mario Vieira
+  + Andre Freitas 
+  + Joao Pereira
 ---
