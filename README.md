@@ -22,7 +22,7 @@ if you fail you lose points.
   ### **Speaking of fun, hope you all have a blast with our game!**
   
   ### Collaborators: 
-  + Mario Vieira
-  + Andre Freitas 
+  + Mario Vieira -> https://github.com/MarioWork
+  + Andre Freitas -> https://github.com/andresatierf
   + Joao Pereira
 ---
