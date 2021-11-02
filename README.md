@@ -44,5 +44,5 @@ if you fail you lose points.
  ## Collaborators
   + [Mario Vieira](https://github.com/MarioWork)
   + [Andre Freitas](https://github.com/andresatierf)
-  + [Joao Pereira]()
+  + [Joao Pereira](https://github.com/jpv-pereira)
 ---
